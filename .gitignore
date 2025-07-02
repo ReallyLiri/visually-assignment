@@ -1,0 +1,15 @@
+.DS_Store
+.idea
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+ENV/
+
+node_modules/
+build/
+dist/
+npm-debug.log
