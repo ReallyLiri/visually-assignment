@@ -1,5 +1,7 @@
+import json
 import os
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from search_client import search_documents
 import uvicorn
 from log import logger
@@ -8,6 +10,14 @@ _DEFAULT_PAGE_SIZE = 12
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
@@ -26,10 +36,15 @@ def search(
         f"Search endpoint called with q={q}, page={page}, page_size={page_size}"
     )
     results = search_documents(query=q, page=page, page_size=page_size)
-    return results
+    has_more = page * page_size < results["found"]
+    documents = [json.loads(entry["document"]["doc"]) for entry in results["hits"]]
+    return {"documents": documents, "has_more": has_more, "total": results["found"]}
 
 
 if __name__ == "__main__":
     uvicorn.run(
-        "server:app", host="0.0.0.0", port=int(os.getenv("SERVER_PORT", 8017)), reload=True
+        "server:app",
+        host="0.0.0.0",
+        port=int(os.getenv("SERVER_PORT", 8017)),
+        reload=True,
     )

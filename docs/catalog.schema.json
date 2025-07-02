@@ -1,22 +1,67 @@
 {
   "name": "catalog",
   "fields": [
-    { "name": "id", "type": "string" },
-    { "name": "title", "type": "string" },
-    { "name": "alias", "type": "string", "facet": true },
-    { "name": "handle", "type": "string" },
-    { "name": "collections", "type": "string[]", "facet": true },
-    { "name": "tags", "type": "string[]", "facet": true },
-    { "name": "price", "type": "float", "facet": true },
-    { "name": "inventoryQuantity", "type": "int32" },
-    { "name": "orders", "type": "int32", "facet": true },
-    { "name": "productType", "type": "string", "facet": true },
-    { "name": "status", "type": "string", "facet": true },
-    { "name": "rank", "type": "int32" },
-    { "name": "topProduct", "type": "bool", "facet": true },
-    { "name": "mainValue", "type": "string", "facet": true },
-    { "name": "publishedAt", "type": "string" },
-    { "name": "epochSec", "type": "int64" }
+    {
+      "name": "id",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "doc",
+      "type": "string",
+      "indexed": false,
+      "facet": false
+    },
+    {
+      "name": "alias",
+      "type": "string",
+      "facet": true
+    },
+    {
+      "name": "collections",
+      "type": "string[]",
+      "facet": true
+    },
+    {
+      "name": "handle",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "facet": false
+    },
+    {
+      "name": "rank",
+      "type": "int32",
+      "facet": true
+    },
+    {
+      "name": "variants_titles",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "variants_colors",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "options_values",
+      "type": "string[]",
+      "facet": false
+    },
+    {
+      "name": "price",
+      "type": "float",
+      "facet": true
+    }
   ],
   "default_sorting_field": "rank"
 }

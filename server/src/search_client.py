@@ -20,7 +20,7 @@ def drop_collection(collection_name):
     try:
         _typesense_client.collections[collection_name].delete()
     except Exception as e:
-        if "not found" in str(e):
+        if "404" in str(e):
             pass
         else:
             raise
@@ -44,18 +44,31 @@ _typesense_client = typesense.Client(
 )
 
 
+def _flatten(xss):
+    return [x for xs in xss for x in xs]
+
+
 def import_documents(documents):
+    transformed_docs = []
     for doc in documents:
-        if "_id" in doc:
-            doc["id"] = doc["_id"]["$oid"]
-            del doc["_id"]
-        if not isinstance(doc["id"], str):
-            doc["id"] = str(doc["id"])
-        for key, value in doc.items():
-            if isinstance(value, dict):
-                doc[key] = json.dumps(value)
+        transformed_doc = {
+            "id": doc["_id"]["$oid"],
+            "doc": json.dumps(doc, ensure_ascii=False),
+            "alias": doc.get("alias", ""),
+            "collections": doc.get("collections", []),
+            "handle": doc.get("handle", ""),
+            "title": doc.get("title", ""),
+            "description": doc.get("description", ""),
+            "rank": doc.get("rank", 0),
+            "variants_titles": [var.get("title", "") for var in doc.get("variants", []) if "title" in var],
+            "variants_colors": [var.get("Color", "") for var in doc.get("variants", []) if "Color" in var],
+            "options_values": _flatten([var.get("values") for var in doc.get("options", [])]),
+            "price": doc.get("price", 0)
+        }
+        transformed_docs.append(transformed_doc)
+
     res = _typesense_client.collections[_typesense_collection_name].documents.import_(
-        documents, {'action': 'create'}
+        transformed_docs, {'action': 'create'}
     )
     for doc_res in res:
         if "error" in doc_res:
