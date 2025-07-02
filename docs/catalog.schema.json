@@ -23,6 +23,11 @@
       "facet": true
     },
     {
+      "name": "tags",
+      "type": "string[]",
+      "facet": true
+    },
+    {
       "name": "handle",
       "type": "string",
       "facet": false
